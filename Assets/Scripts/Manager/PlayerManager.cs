@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
     public AnimationClip airFallAnimationClip;
     public AnimationClip groundLandAnimationClip;
     public AnimationClip deathAnimationClip;
+    public bool IsAlive;
     [Header("Controller")]
     public Animator characterAnimator;
     public LegsAnimator characterLegs;
@@ -48,6 +49,7 @@ public class PlayerManager : MonoBehaviour
     public void Setup(GameManager gameManager)
     {
         manager = gameManager;
+        IsAlive = true;
     }
     //
     public void ProcessPhysics()
@@ -64,7 +66,14 @@ public class PlayerManager : MonoBehaviour
         //
         if (raycastHit.transform == null)
         {
-            characterRigid.AddForce(Physics.gravity * 1.4f, ForceMode.Acceleration);
+            if (characterAnimator.GetBool("IsGliding"))
+            {
+                characterRigid.AddForce(Physics.gravity * 0.16f, ForceMode.Acceleration);
+            }
+            else
+            {
+                characterRigid.AddForce(Physics.gravity * 1.4f, ForceMode.Acceleration);
+            }
         }
         else
         {
@@ -172,15 +181,22 @@ public class PlayerManager : MonoBehaviour
             if (characterRigid.linearVelocity.sqrMagnitude > 0.8f && Mathf.Abs(characterRigid.linearVelocity.y) > 0.8f)
             {
                 characterAnimator.SetBool("IsFalling", true);
+                //
+                if (inputCache != null)
+                {
+                    characterAnimator.SetBool("IsGliding", inputCache.secondaryActionHold);
+                }
             }
             else
             {
                 characterAnimator.SetBool("IsFalling", false);
+                characterAnimator.SetBool("IsGliding", false);
             }
         }
         else
         {
             characterAnimator.SetBool("IsFalling", false);
+            characterAnimator.SetBool("IsGliding", false);
         }
         //
         characterAnimator.SetFloat("LocomotionX", (inputVectorLerp.x));
@@ -190,6 +206,13 @@ public class PlayerManager : MonoBehaviour
     public void SetInput(InputCache cache)
     {
         inputCache = cache;
+
+        // Rotation Input
+        inputLookRotation = inputCache.lookRotation;
+        inputCache.lookRotation = Quaternion.identity;
+
+        //Death Check
+        if (!IsAlive) { return; }
 
         // Move Input
         inputVector = inputCache.inputVector;
@@ -203,10 +226,6 @@ public class PlayerManager : MonoBehaviour
             inputVectorLerp = Vector3.Lerp(inputVectorLerp, inputVector, Time.deltaTime * 8f);
         }
 
-        // Rotation Input
-        inputLookRotation = inputCache.lookRotation;
-        inputCache.lookRotation = Quaternion.identity;
-
         // Click Input
         if (inputCache.jumpActionClick)
         {
@@ -215,6 +234,7 @@ public class PlayerManager : MonoBehaviour
             {
                 if (characterAnimator.GetBool("IsGrounded") && groundJumpCounter == 2)
                 {
+                    manager.audioManager.PlayAudioJump();
                     groundJumpCounter--;
                     DetachGround();
                     extraMoveVector += Vector3.up * JumpStrength;
@@ -223,8 +243,9 @@ public class PlayerManager : MonoBehaviour
                 }
                 else
                 {
-                    if (characterRigid.linearVelocity.y < 0f)
+                    if (characterRigid.linearVelocity.y < 0.4f)
                     {
+                        manager.audioManager.PlayAudioJump();
                         groundJumpCounter--;
                         DetachGround();
                         extraMoveVector += 1.28f * JumpStrength * Vector3.up;
@@ -239,6 +260,7 @@ public class PlayerManager : MonoBehaviour
         {
             // Primary Input
             DetachGround();
+            manager.audioManager.PlayAudio(manager.audioManager.playerDash, 0.64f);
             extraMoveVector += cameraPlanarDirection * JumpStrength * 0.8f;
             disableGroundSpringTimer = 0.16f;
             characterAnimator.SetTrigger("DodgeTrigger");

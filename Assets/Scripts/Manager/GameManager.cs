@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     void LateUpdate()
     {
         if (gameState == 0) { return; }
+        if (!playerManager.IsAlive) { return; }
         cameraManager.ProcessInput(inputManager.InputCache);
     }
     //
@@ -63,6 +64,7 @@ public class GameManager : MonoBehaviour
     public void ProcessObjectInteraction()
     {
         if (gameState == 2) { return; }
+        if (!playerManager.IsAlive) { return; }
         if (Physics.OverlapSphereNonAlloc(playerManager.transform.position + playerManager.transform.forward * 0.2f, 0.5f, colliderCache, objectInteractionLayer) > 0)
         {
             interactionInterfaceCache = colliderCache[0].GetComponent<ObjectInteractionInterface>();

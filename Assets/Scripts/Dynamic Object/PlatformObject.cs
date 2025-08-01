@@ -15,6 +15,11 @@ public class PlatformObject : MonoBehaviour
     [Range(1f, 10f)] public float disappearSecond;
     public Renderer disappearRenderer;
     public Collider disappearCollider;
+    [Header("Death")]
+    public bool deathOnTouch;
+    public float deathRepelForce;
+    public Vector3 deathColliderSize;
+    public LayerMask deathColliderLayer;
     //
     private Vector3[] movePointCache;
     private int movePointIndex;
@@ -65,6 +70,23 @@ public class PlatformObject : MonoBehaviour
                 {
                     disappearRenderer.material.DOFade(1f, 0.2f).SetEase(Ease.OutSine);
                     disappearCollider.enabled = true;
+                }
+            }
+        }
+        //
+        if (deathOnTouch)
+        {
+            if (GameManager.Instance.playerManager.IsAlive)
+            {
+                if (Physics.OverlapBox(transform.position, deathColliderSize, transform.rotation, deathColliderLayer).Length > 0)
+                {
+                    GameManager.Instance.playerManager.IsAlive = false;
+                    GameManager.Instance.playerManager.characterLegs.LegsAnimatorBlend = 0f;
+                    GameManager.Instance.playerManager.characterAnimator.SetTrigger("DeathTrigger");
+                    GameManager.Instance.audioManager.PlayAudio(GameManager.Instance.audioManager.deathByPlatform, 0.8f);
+                    Vector3 repelForce = (GameManager.Instance.playerManager.transform.position - transform.position).normalized;
+                    repelForce.y = 0.32f;
+                    GameManager.Instance.playerManager.AddExternalForce(repelForce * deathRepelForce);
                 }
             }
         }
