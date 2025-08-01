@@ -28,6 +28,8 @@ public class PlayerManager : MonoBehaviour
     public float MaxAccel;
     public float MaxForce;
     public AnimationCurve ForceDotFactor;
+    [Header("Effect")]
+    public GameObject glideVFX;
     //
     private float springForce;
     private RaycastHit raycastHit;
@@ -185,18 +187,21 @@ public class PlayerManager : MonoBehaviour
                 if (inputCache != null)
                 {
                     characterAnimator.SetBool("IsGliding", inputCache.secondaryActionHold);
+                    glideVFX.SetActive(inputCache.secondaryActionHold);
                 }
             }
             else
             {
                 characterAnimator.SetBool("IsFalling", false);
                 characterAnimator.SetBool("IsGliding", false);
+                glideVFX.SetActive(false);
             }
         }
         else
         {
             characterAnimator.SetBool("IsFalling", false);
             characterAnimator.SetBool("IsGliding", false);
+            glideVFX.SetActive(false);
         }
         //
         characterAnimator.SetFloat("LocomotionX", (inputVectorLerp.x));
@@ -248,7 +253,7 @@ public class PlayerManager : MonoBehaviour
                 }
                 else
                 {
-                    if (characterRigid.linearVelocity.y < 0.4f)
+                    if (characterRigid.linearVelocity.y < 0.64f)
                     {
                         manager.audioManager.PlayAudioJump();
                         groundJumpCounter--;
