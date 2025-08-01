@@ -212,7 +212,12 @@ public class PlayerManager : MonoBehaviour
         inputCache.lookRotation = Quaternion.identity;
 
         //Death Check
-        if (!IsAlive) { return; }
+        if (!IsAlive)
+        {
+            inputVector = Vector3.zero;
+            inputVectorLerp = Vector3.zero;
+            return;
+        }
 
         // Move Input
         inputVector = inputCache.inputVector;
@@ -415,6 +420,20 @@ public class PlayerManager : MonoBehaviour
         extraMoveVector += externalForce;
         disableGroundSpringTimer = 0.64f;
         characterAnimator.SetTrigger("JumpTrigger");
+    }
+    public void OnDeath(Vector3 repelPos, float repelForceFactor)
+    {
+        IsAlive = false;
+        inputCache.inputVector = Vector3.zero;
+        inputVector = Vector3.zero;
+        manager.inputManager.InputCache.inputVector = Vector3.zero;
+        // characterRigid.linearVelocity = Vector3.zero;
+        characterLegs.LegsAnimatorBlend = 0f;
+        characterAnimator.SetTrigger("DeathTrigger");
+        manager.audioManager.PlayAudio(manager.audioManager.deathByPlatform, 0.8f);
+        Vector3 repelForceCalc = (transform.position - repelPos).normalized;
+        repelForceCalc.y = 0.32f;
+        AddExternalForce(repelForceCalc * repelForceFactor);
     }
     //
     public void OnCharacterAnimEvent(string stringParam)

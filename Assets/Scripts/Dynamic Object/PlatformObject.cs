@@ -80,13 +80,7 @@ public class PlatformObject : MonoBehaviour
             {
                 if (Physics.OverlapBox(transform.position, deathColliderSize, transform.rotation, deathColliderLayer).Length > 0)
                 {
-                    GameManager.Instance.playerManager.IsAlive = false;
-                    GameManager.Instance.playerManager.characterLegs.LegsAnimatorBlend = 0f;
-                    GameManager.Instance.playerManager.characterAnimator.SetTrigger("DeathTrigger");
-                    GameManager.Instance.audioManager.PlayAudio(GameManager.Instance.audioManager.deathByPlatform, 0.8f);
-                    Vector3 repelForce = (GameManager.Instance.playerManager.transform.position - transform.position).normalized;
-                    repelForce.y = 0.32f;
-                    GameManager.Instance.playerManager.AddExternalForce(repelForce * deathRepelForce);
+                    GameManager.Instance.playerManager.OnDeath(transform.position, deathRepelForce);
                 }
             }
         }
