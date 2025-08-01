@@ -174,18 +174,9 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Detail"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""7b49ef30-69f7-4fb8-ae80-ff9687c8ad7d"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Lock"",
-                    ""type"": ""Button"",
-                    ""id"": ""b93dfa14-376b-4a57-9329-54ceb1e25376"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -482,22 +473,11 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b79b9636-b984-49cb-9efc-92b5b772db00"",
-                    ""path"": ""<Keyboard>/tab"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Detail"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""062ec638-a41e-4a92-9eec-9272de7dacb3"",
-                    ""path"": ""<Mouse>/middleButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Lock"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1094,8 +1074,7 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
         m_Player_SkillOne = m_Player.FindAction("SkillOne", throwIfNotFound: true);
         m_Player_SkillTwo = m_Player.FindAction("SkillTwo", throwIfNotFound: true);
         m_Player_SkillThree = m_Player.FindAction("SkillThree", throwIfNotFound: true);
-        m_Player_Detail = m_Player.FindAction("Detail", throwIfNotFound: true);
-        m_Player_Lock = m_Player.FindAction("Lock", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1198,8 +1177,7 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SkillOne;
     private readonly InputAction m_Player_SkillTwo;
     private readonly InputAction m_Player_SkillThree;
-    private readonly InputAction m_Player_Detail;
-    private readonly InputAction m_Player_Lock;
+    private readonly InputAction m_Player_Interact;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1248,13 +1226,9 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @SkillThree => m_Wrapper.m_Player_SkillThree;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Detail".
+        /// Provides access to the underlying input action "Player/Interact".
         /// </summary>
-        public InputAction @Detail => m_Wrapper.m_Player_Detail;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/Lock".
-        /// </summary>
-        public InputAction @Lock => m_Wrapper.m_Player_Lock;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1308,12 +1282,9 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
             @SkillThree.started += instance.OnSkillThree;
             @SkillThree.performed += instance.OnSkillThree;
             @SkillThree.canceled += instance.OnSkillThree;
-            @Detail.started += instance.OnDetail;
-            @Detail.performed += instance.OnDetail;
-            @Detail.canceled += instance.OnDetail;
-            @Lock.started += instance.OnLock;
-            @Lock.performed += instance.OnLock;
-            @Lock.canceled += instance.OnLock;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         /// <summary>
@@ -1352,12 +1323,9 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
             @SkillThree.started -= instance.OnSkillThree;
             @SkillThree.performed -= instance.OnSkillThree;
             @SkillThree.canceled -= instance.OnSkillThree;
-            @Detail.started -= instance.OnDetail;
-            @Detail.performed -= instance.OnDetail;
-            @Detail.canceled -= instance.OnDetail;
-            @Lock.started -= instance.OnLock;
-            @Lock.performed -= instance.OnLock;
-            @Lock.canceled -= instance.OnLock;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         /// <summary>
@@ -1722,19 +1690,12 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSkillThree(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Detail" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDetail(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Lock" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnLock(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

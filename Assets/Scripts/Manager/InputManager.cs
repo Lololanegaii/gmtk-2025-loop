@@ -30,6 +30,10 @@ public class InputManager : MonoBehaviour
         vectorCache = mainInput.Player.Zoom.ReadValue<Vector2>();
         InputCache.zoomDelta = vectorCache.y;
 
+        // Interact
+        InputCache.interactClick = mainInput.Player.Interact.WasPressedThisFrame();
+        InputCache.jumpActionClick = mainInput.Player.Impulse.WasPressedThisFrame();
+
         // // Press Hold Action
         // InputCache.primaryActionHold = mainInput.Player.Primary.IsPressed();
         // InputCache.secondaryActionHold = mainInput.Player.Secondary.IsPressed();
@@ -101,6 +105,7 @@ public class InputCache
     public Quaternion lookRotation;
     public float zoomDelta;
     public bool impulseActionClick;
+    public bool jumpActionClick;
     public bool primaryActionClick;
     public bool primaryActionHold;
     public bool primaryActionRelease;
@@ -116,4 +121,5 @@ public class InputCache
     public bool skillThreeClick;
     public bool skillThreeHold;
     public bool skillThreeRelease;
+    public bool interactClick;
 }

@@ -13,8 +13,8 @@ TagManager:
   - UI
   - Entity
   - Ground
-  - Shop
-  - Portal
+  - 
+  - InteractionObject
   - 
   - 
   - 

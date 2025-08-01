@@ -88,18 +88,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Detail",
+                    "name": "Interact",
                     "type": "Button",
                     "id": "7b49ef30-69f7-4fb8-ae80-ff9687c8ad7d",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Lock",
-                    "type": "Button",
-                    "id": "b93dfa14-376b-4a57-9329-54ceb1e25376",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -396,22 +387,11 @@
                 {
                     "name": "",
                     "id": "b79b9636-b984-49cb-9efc-92b5b772db00",
-                    "path": "<Keyboard>/tab",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Detail",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "062ec638-a41e-4a92-9eec-9272de7dacb3",
-                    "path": "<Mouse>/middleButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Lock",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

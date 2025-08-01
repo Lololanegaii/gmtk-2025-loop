@@ -5,6 +5,8 @@ public class PlayerManager : MonoBehaviour
 {
     [Header("Data")]
     public AnimationClip idleAnimationClip;
+    public AnimationClip airFallAnimationClip;
+    public AnimationClip groundLandAnimationClip;
     public AnimationClip deathAnimationClip;
     [Header("Controller")]
     public Animator characterAnimator;
@@ -31,6 +33,7 @@ public class PlayerManager : MonoBehaviour
     private Vector3 cameraPlanarDirection;
     private Quaternion cameraPlanarRotation;
     private Vector3 inputVector;
+    private Vector3 inputVectorLerp;
     private Vector3 inputMoveVector;
     private Vector3 extraMoveVector;
     private Quaternion inputLookRotation;
@@ -38,6 +41,7 @@ public class PlayerManager : MonoBehaviour
     private Vector3 desiredVelocityCache;
     private string animEventParameterCache;
     private float animEventParameterValue;
+    private float disableGroundSpringTimer;
     private GameManager manager;
     //
     public void Setup(GameManager gameManager)
@@ -56,14 +60,19 @@ public class PlayerManager : MonoBehaviour
     public void UpdateSpringForce()
     {
         Physics.Raycast(characterTransform.position, Vector3.down, out raycastHit, SpringLength, groundLayer);
-        // 
+        //
         if (raycastHit.transform == null)
         {
-            characterRigid.AddForce(Physics.gravity * 1.5f, ForceMode.Acceleration);
+            characterRigid.AddForce(Physics.gravity * 1.28f, ForceMode.Acceleration);
         }
         else
         {
-            characterRigid.AddForce(Physics.gravity * 0.75f, ForceMode.Acceleration);
+            characterRigid.AddForce(Physics.gravity * 0.8f, ForceMode.Acceleration);
+        }
+        if (disableGroundSpringTimer > 0f)
+        {
+            disableGroundSpringTimer -= Time.fixedDeltaTime;
+            return;
         }
         //
         if (raycastHit.transform != null)
@@ -154,6 +163,25 @@ public class PlayerManager : MonoBehaviour
         {
             characterAnimator.SetBool("IsMoving", false);
         }
+        //
+        if (!characterAnimator.GetBool("IsGrounded"))
+        {
+            if (characterRigid.linearVelocity.sqrMagnitude > 0.8f && Mathf.Abs(characterRigid.linearVelocity.y) > 0.8f)
+            {
+                characterAnimator.SetBool("IsFalling", true);
+            }
+            else
+            {
+                characterAnimator.SetBool("IsFalling", false);
+            }
+        }
+        else
+        {
+            characterAnimator.SetBool("IsFalling", false);
+        }
+        //
+        characterAnimator.SetFloat("LocomotionX", (inputVectorLerp.x));
+        characterAnimator.SetFloat("LocomotionZ", (inputVectorLerp.z));
     }
     //
     public void SetInput(InputCache cache)
@@ -163,6 +191,7 @@ public class PlayerManager : MonoBehaviour
         // Move Input
         inputVector = inputCache.inputVector;
         inputCache.inputVector = Vector3.zero;
+        inputVectorLerp = Vector3.Lerp(inputVectorLerp, inputVector, Time.deltaTime * 2f);
 
         // Rotation Input
         inputLookRotation = inputCache.lookRotation;
@@ -184,6 +213,18 @@ public class PlayerManager : MonoBehaviour
             // energyAttribute.ChangeValue(-impulseAttribute.energyRequired);
             // impulseAttribute.TriggerCooldown();
             inputCache.impulseActionClick = false;
+        }
+        else if (inputCache.jumpActionClick)
+        {
+            // Jump Input
+            if (characterAnimator.GetBool("IsGrounded"))
+            {
+                DetachGround();
+                extraMoveVector += Vector3.up * JumpStrength;
+                disableGroundSpringTimer = 0.32f;
+                characterAnimator.SetTrigger("JumpTrigger");
+            }
+            inputCache.jumpActionClick = false;
         }
         else if (inputCache.primaryActionClick)
         {
@@ -358,6 +399,13 @@ public class PlayerManager : MonoBehaviour
     {
         characterAnimator.SetBool("IsGrounded", false);
         characterLegs.User_AddImpulse(characterLegs.DebugPushHipsImpulse);
+    }
+    public void AddExternalForce(Vector3 externalForce)
+    {
+        DetachGround();
+        extraMoveVector += externalForce;
+        disableGroundSpringTimer = 0.64f;
+        characterAnimator.SetTrigger("JumpTrigger");
     }
     //
     public void OnCharacterAnimEvent(string stringParam)
