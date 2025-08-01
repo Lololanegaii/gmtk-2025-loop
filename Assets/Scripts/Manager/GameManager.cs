@@ -39,6 +39,10 @@ public class GameManager : MonoBehaviour
         inputManager.ProcessInput(playerManager, cameraManager.mainCameraTrans);
         ProcessObjectInteraction();
     }
+    void FixedUpdate()
+    {
+        playerManager.ProcessPhysics();
+    }
     //
     void LateUpdate()
     {

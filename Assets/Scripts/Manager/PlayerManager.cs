@@ -49,9 +49,9 @@ public class PlayerManager : MonoBehaviour
         manager = gameManager;
     }
     //
-    void FixedUpdate()
+    public void ProcessPhysics()
     {
-        UpdateMovementForce();
+        if (inputCache != null) { UpdateMovementForce(); }
         UpdateSpringForce();
         UpdateUprightForce();
         UpdatePhysicsState();
@@ -63,7 +63,7 @@ public class PlayerManager : MonoBehaviour
         //
         if (raycastHit.transform == null)
         {
-            characterRigid.AddForce(Physics.gravity * 1.28f, ForceMode.Acceleration);
+            characterRigid.AddForce(Physics.gravity * 1.4f, ForceMode.Acceleration);
         }
         else
         {
@@ -122,11 +122,12 @@ public class PlayerManager : MonoBehaviour
             cameraPlanarDirection = Vector3.ProjectOnPlane(inputLookRotation * Vector3.up, Vector3.up).normalized;
         }
         cameraPlanarRotation = Quaternion.LookRotation(cameraPlanarDirection, Vector3.up);
-        inputMoveVector = (cameraPlanarRotation * inputVector).normalized;
-        //
+        inputMoveVector = (cameraPlanarRotation * (inputCache.runActionHold ? inputVector * 2f : inputVector)).normalized;
+
         float velocityDot = Vector3.Dot(inputMoveVector, desiredVelocityCache.normalized);
-        float accelDot = MaxAccel * ForceDotFactor.Evaluate(velocityDot);
-        Vector3 peakVelocity = inputMoveVector * MaxSpeed;
+        float accelDot = (inputCache.runActionHold ? MaxAccel * 2f : MaxAccel) * ForceDotFactor.Evaluate(velocityDot);
+        Vector3 peakVelocity = inputMoveVector * (inputCache.runActionHold ? MaxSpeed * 2f : MaxSpeed);
+
         desiredVelocityCache = Vector3.MoveTowards(desiredVelocityCache, peakVelocity, accelDot * Time.fixedDeltaTime);
         Vector3 desiredAccelCache = (desiredVelocityCache - characterRigid.linearVelocity) / Time.fixedDeltaTime;
         float forceDot = MaxForce * ForceDotFactor.Evaluate(velocityDot);
@@ -191,7 +192,14 @@ public class PlayerManager : MonoBehaviour
         // Move Input
         inputVector = inputCache.inputVector;
         inputCache.inputVector = Vector3.zero;
-        inputVectorLerp = Vector3.Lerp(inputVectorLerp, inputVector, Time.deltaTime * 2f);
+        if (inputCache.runActionHold)
+        {
+            inputVectorLerp = Vector3.Lerp(inputVectorLerp, inputVector * 2f, Time.deltaTime * 8f);
+        }
+        else
+        {
+            inputVectorLerp = Vector3.Lerp(inputVectorLerp, inputVector, Time.deltaTime * 8f);
+        }
 
         // Rotation Input
         inputLookRotation = inputCache.lookRotation;

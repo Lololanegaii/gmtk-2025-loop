@@ -32,7 +32,8 @@ public class InputManager : MonoBehaviour
 
         // Interact
         InputCache.interactClick = mainInput.Player.Interact.WasPressedThisFrame();
-        InputCache.jumpActionClick = mainInput.Player.Impulse.WasPressedThisFrame();
+        InputCache.jumpActionClick = mainInput.Player.Jump.WasPressedThisFrame();
+        InputCache.runActionHold = mainInput.Player.Run.IsPressed();
 
         // // Press Hold Action
         // InputCache.primaryActionHold = mainInput.Player.Primary.IsPressed();
@@ -106,6 +107,7 @@ public class InputCache
     public float zoomDelta;
     public bool impulseActionClick;
     public bool jumpActionClick;
+    public bool runActionHold;
     public bool primaryActionClick;
     public bool primaryActionHold;
     public bool primaryActionRelease;

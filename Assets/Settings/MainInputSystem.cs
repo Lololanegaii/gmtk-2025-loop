@@ -120,9 +120,18 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Impulse"",
+                    ""name"": ""Jump"",
                     ""type"": ""Button"",
                     ""id"": ""f1ba0d36-48eb-4cd5-b651-1c94a6531f70"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""6ed08701-fe99-4e9c-ae31-9861fef54498"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -389,7 +398,7 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Impulse"",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -400,7 +409,29 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Impulse"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b009e1fc-9d09-4d77-b4f5-8896ad79e08e"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e0629501-f001-4b2c-a321-c9a53ff6cf01"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1068,7 +1099,8 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
-        m_Player_Impulse = m_Player.FindAction("Impulse", throwIfNotFound: true);
+        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_Primary = m_Player.FindAction("Primary", throwIfNotFound: true);
         m_Player_Secondary = m_Player.FindAction("Secondary", throwIfNotFound: true);
         m_Player_SkillOne = m_Player.FindAction("SkillOne", throwIfNotFound: true);
@@ -1171,7 +1203,8 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Zoom;
-    private readonly InputAction m_Player_Impulse;
+    private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_Primary;
     private readonly InputAction m_Player_Secondary;
     private readonly InputAction m_Player_SkillOne;
@@ -1202,9 +1235,13 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Impulse".
+        /// Provides access to the underlying input action "Player/Jump".
         /// </summary>
-        public InputAction @Impulse => m_Wrapper.m_Player_Impulse;
+        public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Run".
+        /// </summary>
+        public InputAction @Run => m_Wrapper.m_Player_Run;
         /// <summary>
         /// Provides access to the underlying input action "Player/Primary".
         /// </summary>
@@ -1264,9 +1301,12 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
             @Zoom.started += instance.OnZoom;
             @Zoom.performed += instance.OnZoom;
             @Zoom.canceled += instance.OnZoom;
-            @Impulse.started += instance.OnImpulse;
-            @Impulse.performed += instance.OnImpulse;
-            @Impulse.canceled += instance.OnImpulse;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
+            @Run.started += instance.OnRun;
+            @Run.performed += instance.OnRun;
+            @Run.canceled += instance.OnRun;
             @Primary.started += instance.OnPrimary;
             @Primary.performed += instance.OnPrimary;
             @Primary.canceled += instance.OnPrimary;
@@ -1305,9 +1345,12 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
             @Zoom.started -= instance.OnZoom;
             @Zoom.performed -= instance.OnZoom;
             @Zoom.canceled -= instance.OnZoom;
-            @Impulse.started -= instance.OnImpulse;
-            @Impulse.performed -= instance.OnImpulse;
-            @Impulse.canceled -= instance.OnImpulse;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
+            @Run.started -= instance.OnRun;
+            @Run.performed -= instance.OnRun;
+            @Run.canceled -= instance.OnRun;
             @Primary.started -= instance.OnPrimary;
             @Primary.performed -= instance.OnPrimary;
             @Primary.canceled -= instance.OnPrimary;
@@ -1648,12 +1691,19 @@ public partial class @MainInputSystem: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnZoom(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Impulse" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnImpulse(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Run" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRun(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Primary" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

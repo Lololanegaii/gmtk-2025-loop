@@ -20,9 +20,9 @@ public class CanvasManager : MonoBehaviour
     {
         p2pTween.Kill();
         GameManager.Instance.audioManager.PlayAudio(GameManager.Instance.audioManager.pressPlayClick, 0.64f);
-        GameManager.Instance.cameraManager.menuCamera.DOPunchPosition(Vector3.right, 0.64f).SetEase(Ease.InOutSine);
+        GameManager.Instance.cameraManager.menuCamera.DOPunchPosition(Vector3.right * 0.64f, 0.4f).SetEase(Ease.InOutSine);
         menuCanvasGroup.interactable = false;
-        menuCanvasGroup.DOFade(0f, 0.64f).SetEase(Ease.InOutSine).OnComplete(() =>
+        menuCanvasGroup.DOFade(0f, 0.4f).SetEase(Ease.InOutSine).OnComplete(() =>
         {
             GameManager.Instance.OnGameStart();
         });

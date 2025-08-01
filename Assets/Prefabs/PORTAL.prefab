@@ -49,10 +49,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalVFX: {fileID: 6956144491220964953}
   portalTrigger: {fileID: 7872863520818529725}
-  portalCollider: {fileID: 684890715178522204}
-  portalLayer:
-    serializedVersion: 2
-    m_Bits: 512
+  portalTeleport: 0
+  portalTeleportCoordinate: {x: 0, y: 0, z: 0}
+  portalLinkedPair: {fileID: 0}
 --- !u!135 &7872863520818529725
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -100,15 +99,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7925252469737684642, guid: 680c50319b5ffb848907b585952be821, type: 3}
       propertyPath: m_LocalScale.x
-      value: 12
+      value: 12.800001
       objectReference: {fileID: 0}
     - target: {fileID: 7925252469737684642, guid: 680c50319b5ffb848907b585952be821, type: 3}
       propertyPath: m_LocalScale.y
-      value: 12
+      value: 12.800001
       objectReference: {fileID: 0}
     - target: {fileID: 7925252469737684642, guid: 680c50319b5ffb848907b585952be821, type: 3}
       propertyPath: m_LocalScale.z
-      value: 12
+      value: 12.800001
       objectReference: {fileID: 0}
     - target: {fileID: 7925252469737684642, guid: 680c50319b5ffb848907b585952be821, type: 3}
       propertyPath: m_LocalPosition.x
@@ -195,15 +194,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 257e9e15ac18df84593fe4c07d631eb3, type: 3}
       propertyPath: m_LocalScale.x
-      value: 4
+      value: 1.41
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 257e9e15ac18df84593fe4c07d631eb3, type: 3}
       propertyPath: m_LocalScale.y
-      value: 4
+      value: 1.41
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 257e9e15ac18df84593fe4c07d631eb3, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.6666667
+      value: 0.93999994
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 257e9e15ac18df84593fe4c07d631eb3, type: 3}
       propertyPath: m_LocalPosition.x
