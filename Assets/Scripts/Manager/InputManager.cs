@@ -34,31 +34,23 @@ public class InputManager : MonoBehaviour
         InputCache.interactClick = mainInput.Player.Interact.WasPressedThisFrame();
         InputCache.jumpActionClick = mainInput.Player.Jump.WasPressedThisFrame();
         InputCache.runActionHold = mainInput.Player.Run.IsPressed();
+        InputCache.primaryActionClick = mainInput.Player.Primary.WasPressedThisFrame();
+        InputCache.secondaryActionClick = mainInput.Player.Secondary.WasPressedThisFrame();
 
-        // // Press Hold Action
-        // InputCache.primaryActionHold = mainInput.Player.Primary.IsPressed();
-        // InputCache.secondaryActionHold = mainInput.Player.Secondary.IsPressed();
+        // Press Hold Action
+        InputCache.primaryActionHold = mainInput.Player.Primary.IsPressed();
+        InputCache.secondaryActionHold = mainInput.Player.Secondary.IsPressed();
         // InputCache.skillOneHold = mainInput.Player.SkillOne.IsPressed();
         // InputCache.skillTwoHold = mainInput.Player.SkillTwo.IsPressed();
         // InputCache.skillThreeHold = mainInput.Player.SkillThree.IsPressed();
 
-        // // Press Release Action
-        // InputCache.primaryActionRelease = mainInput.Player.Primary.WasReleasedThisFrame();
-        // InputCache.secondaryActionRelease = mainInput.Player.Secondary.WasReleasedThisFrame();
+        // Press Release Action
+        InputCache.primaryActionRelease = mainInput.Player.Primary.WasReleasedThisFrame();
+        InputCache.secondaryActionRelease = mainInput.Player.Secondary.WasReleasedThisFrame();
         // InputCache.skillOneRelease = mainInput.Player.SkillOne.WasReleasedThisFrame();
         // InputCache.skillTwoRelease = mainInput.Player.SkillTwo.WasReleasedThisFrame();
         // InputCache.skillThreeRelease = mainInput.Player.SkillThree.WasReleasedThisFrame();
 
-        // if (mainInput.Player.Impulse.WasPressedThisFrame() && character.impulseAttribute.SkillAvailable(character.energyAttribute.value))
-        // {
-        //     // Impulse
-        //     InputCache.impulseActionClick = true;
-        // }
-        // else if (mainInput.Player.Primary.WasPressedThisFrame() && character.primaryAttribute.SkillAvailable(character.energyAttribute.value) && character.AvailableForSkill())
-        // {
-        //     // Primary Action - Mainly Click
-        //     InputCache.primaryActionClick = true;
-        // }
         // else if (mainInput.Player.Secondary.WasPressedThisFrame() && character.secondaryAttribute.SkillAvailable(character.energyAttribute.value) && character.AvailableForSkill())
         // {
         //     // Secondary Action - Mainly Click
@@ -105,7 +97,6 @@ public class InputCache
     public Vector3 lookVector;
     public Quaternion lookRotation;
     public float zoomDelta;
-    public bool impulseActionClick;
     public bool jumpActionClick;
     public bool runActionHold;
     public bool primaryActionClick;

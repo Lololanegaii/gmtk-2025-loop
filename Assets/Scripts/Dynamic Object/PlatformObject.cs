@@ -1,15 +1,24 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class PlatformObject : MonoBehaviour
 {
+    [Header("Move")]
     public Vector3[] movePoints;
     public float moveSpeed;
+    [Header("Rotate")]
     public Vector3 rotateFactor;
     public bool rotateYoyo;
     public float rotateSpeed;
+    [Header("Disappear")]
+    public bool disappearYoyo;
+    [Range(1f, 10f)] public float disappearSecond;
+    public Renderer disappearRenderer;
+    public Collider disappearCollider;
     //
     private Vector3[] movePointCache;
     private int movePointIndex;
+    private float disappear;
     //
     void Start()
     {
@@ -39,6 +48,25 @@ public class PlatformObject : MonoBehaviour
         if (rotateSpeed > 0f)
         {
             transform.Rotate(rotateSpeed * Time.deltaTime * rotateFactor);
+        }
+        //
+        if (disappearYoyo)
+        {
+            disappear += Time.deltaTime;
+            if (disappear >= disappearSecond)
+            {
+                disappear = 0f;
+                if (disappearRenderer.material.color.a > 0.5f)
+                {
+                    disappearRenderer.material.DOFade(0f, 0.32f).SetEase(Ease.InOutSine);
+                    disappearCollider.enabled = false;
+                }
+                else
+                {
+                    disappearRenderer.material.DOFade(1f, 0.32f).SetEase(Ease.InOutSine);
+                    disappearCollider.enabled = true;
+                }
+            }
         }
     }
     void OnDrawGizmosSelected()

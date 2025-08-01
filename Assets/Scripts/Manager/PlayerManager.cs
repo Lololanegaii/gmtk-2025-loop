@@ -42,6 +42,7 @@ public class PlayerManager : MonoBehaviour
     private string animEventParameterCache;
     private float animEventParameterValue;
     private float disableGroundSpringTimer;
+    private int groundJumpCounter;
     private GameManager manager;
     //
     public void Setup(GameManager gameManager)
@@ -150,6 +151,7 @@ public class PlayerManager : MonoBehaviour
         if (raycastHit.transform != null)
         {
             characterAnimator.SetBool("IsGrounded", true);
+            groundJumpCounter = 2;
         }
         else
         {
@@ -206,64 +208,41 @@ public class PlayerManager : MonoBehaviour
         inputCache.lookRotation = Quaternion.identity;
 
         // Click Input
-        if (inputCache.impulseActionClick)
-        {
-            // Dodge Input
-            if (inputVector == Vector3.zero)
-            {
-                extraMoveVector += -cameraPlanarDirection;
-            }
-            else
-            {
-                extraMoveVector += inputMoveVector.normalized;
-            }
-            characterLegs.User_AddImpulse(characterLegs.DebugPushHipsImpulse);
-            // energyAttribute.ChangeValue(-impulseAttribute.energyRequired);
-            // impulseAttribute.TriggerCooldown();
-            inputCache.impulseActionClick = false;
-        }
-        else if (inputCache.jumpActionClick)
+        if (inputCache.jumpActionClick)
         {
             // Jump Input
-            if (characterAnimator.GetBool("IsGrounded"))
+            if (groundJumpCounter > 0)
             {
-                DetachGround();
-                extraMoveVector += Vector3.up * JumpStrength;
-                disableGroundSpringTimer = 0.32f;
-                characterAnimator.SetTrigger("JumpTrigger");
+                if (characterAnimator.GetBool("IsGrounded") && groundJumpCounter == 2)
+                {
+                    groundJumpCounter--;
+                    DetachGround();
+                    extraMoveVector += Vector3.up * JumpStrength;
+                    disableGroundSpringTimer = 0.2f;
+                    characterAnimator.SetTrigger("JumpTrigger");
+                }
+                else
+                {
+                    if (characterRigid.linearVelocity.y < 0f)
+                    {
+                        groundJumpCounter--;
+                        DetachGround();
+                        extraMoveVector += 1.28f * JumpStrength * Vector3.up;
+                        disableGroundSpringTimer = 0.2f;
+                        characterAnimator.SetTrigger("JumpTrigger");
+                    }
+                }
             }
             inputCache.jumpActionClick = false;
         }
         else if (inputCache.primaryActionClick)
         {
             // Primary Input
-            // DisableHitbox();
-            // switch (primaryAttribute.animIndex)
-            // {
-            //     case 0:
-            //         characterAnimator.CrossFade("Primary-0", 0.064f, 0, 0f);
-            //         animatorSlotFocused = CombatAnimationSlot.Primary0;
-            //         break;
-            //     case 1:
-            //         characterAnimator.CrossFade("Primary-1", 0.064f, 0, 0f);
-            //         animatorSlotFocused = CombatAnimationSlot.Primary1;
-            //         break;
-            //     case 2:
-            //         characterAnimator.CrossFade("Primary-2", 0.064f, 0, 0f);
-            //         animatorSlotFocused = CombatAnimationSlot.Primary2;
-            //         break;
-            //     case 3:
-            //         characterAnimator.CrossFade("Primary-3", 0.064f, 0, 0f);
-            //         animatorSlotFocused = CombatAnimationSlot.Primary3;
-            //         break;
-            // }
-            // //
-            // animatorLastSkillCache = primaryAttribute;
-            // energyAttribute.ChangeValue(-primaryAttribute.energyRequired);
-            // primaryAttribute.TriggerCooldown();
-            // GlobalCooldown();
-            // CheckChargeHoldTimer();
-            // inputCache.primaryActionClick = false;
+            DetachGround();
+            extraMoveVector += cameraPlanarDirection * JumpStrength * 0.8f;
+            disableGroundSpringTimer = 0.16f;
+            characterAnimator.SetTrigger("DodgeTrigger");
+            inputCache.primaryActionClick = false;
         }
         else if (inputCache.secondaryActionClick)
         {
