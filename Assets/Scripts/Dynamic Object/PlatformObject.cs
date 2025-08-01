@@ -58,12 +58,12 @@ public class PlatformObject : MonoBehaviour
                 disappear = 0f;
                 if (disappearRenderer.material.color.a > 0.5f)
                 {
-                    disappearRenderer.material.DOFade(0f, 0.32f).SetEase(Ease.InOutSine);
+                    disappearRenderer.material.DOFade(0f, 0.2f).SetEase(Ease.OutSine);
                     disappearCollider.enabled = false;
                 }
                 else
                 {
-                    disappearRenderer.material.DOFade(1f, 0.32f).SetEase(Ease.InOutSine);
+                    disappearRenderer.material.DOFade(1f, 0.2f).SetEase(Ease.OutSine);
                     disappearCollider.enabled = true;
                 }
             }
