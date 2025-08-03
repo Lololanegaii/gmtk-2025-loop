@@ -19,6 +19,15 @@ public class GameManager : MonoBehaviour
     private int gameState;
     //
     public static GameManager Instance;
+    //
+    [Header("Respawn")]
+    public Transform respawnPoint; // Drag your spawn point here in inspector
+    public float respawnDelay = 2f; // How long to wait before respawn
+    public float lastRespawnTime; // ADD THIS LINE
+    private float respawnTimer;
+
+
+
     void Awake()
     {
         Instance = this;
@@ -36,7 +45,19 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (gameState == 0) { return; }
-        if (!playerManager.IsAlive) { return; }
+
+        // NEW RESPAWN CODE - Add this section:
+        if (!playerManager.IsAlive)
+        {
+            respawnTimer += Time.deltaTime;
+            if (respawnTimer >= respawnDelay)
+            {
+                RespawnPlayer();
+            }
+            return; // Don't process other input when dead
+        }
+        // END NEW CODE
+
         inputManager.ProcessInput(playerManager, cameraManager.mainCameraTrans);
         ProcessObjectInteraction();
     }
@@ -77,4 +98,34 @@ public class GameManager : MonoBehaviour
         }
     }
     public void SetGameState(int state) { gameState = state; }
+
+    public void RespawnPlayer()
+    {
+        // Reset player position
+        if (respawnPoint != null)
+        {
+            playerManager.transform.position = respawnPoint.position;
+            playerManager.transform.rotation = respawnPoint.rotation;
+        }
+        else
+        {
+            // Fallback - respawn at current position but higher up
+            Vector3 safePos = playerManager.transform.position;
+            safePos.y += 5f;
+            playerManager.transform.position = safePos;
+        }
+
+        // ADD THIS LINE - Reset camera to follow the respawned player
+        cameraManager.orbitalFollow.ForceCameraPosition(playerManager.transform.position, Quaternion.identity);
+
+        // Reset player state
+        playerManager.IsAlive = true;
+        playerManager.characterRigid.linearVelocity = Vector3.zero;
+        playerManager.characterRigid.angularVelocity = Vector3.zero;
+        playerManager.characterAnimator.SetTrigger("JumpTrigger"); // Reset animation
+
+        // Reset timer
+        respawnTimer = 0f;
+        lastRespawnTime = Time.time; // ADD THIS LINE
+    }
 }

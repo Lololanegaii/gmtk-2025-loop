@@ -80,12 +80,17 @@ public class PlatformObject : MonoBehaviour
             {
                 if (Physics.OverlapBox(transform.position, deathColliderSize, transform.rotation, deathColliderLayer).Length > 0)
                 {
-                    GameManager.Instance.playerManager.OnDeath(transform.position, deathRepelForce);
+                    // Only kill if player has been alive for more than 1 second
+                    if (Time.time - GameManager.Instance.lastRespawnTime > 1f)
+                    {
+                        GameManager.Instance.playerManager.OnDeath(transform.position, deathRepelForce);
+                    }
                 }
             }
         }
     }
-    void OnDrawGizmosSelected()
+
+        void OnDrawGizmosSelected()
     {
         if (movePointCache != null)
         {
